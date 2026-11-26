@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Лабораторна робота №3 </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 15px;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input {
+      width: 100px;
+      padding: 6px;
+    }
+
+    button {
+      padding: 6px 14px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: center;
+    }
+
+    thead tr {
+      background-color: #2c3e50;
+      color: #ffffff;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #ffffff;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #eaf2f8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <label for="interval">Інтервал (мс):</label>
+    <input type="number" id="interval" value="1000" min="100" step="100">
+    <button id="startBtn">Старт</button>
+    <button id="stopBtn" disabled>Стоп</button>
+  </div>
+
+  <table id="dataTable" hidden>
+    <thead>
+      <tr>
+        <th>Час</th>
+        <th>Число</th>
+        <th>Статус</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const intervalInput = document.getElementById('interval');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const table = document.getElementById('dataTable');
+    const tbody = table.querySelector('tbody');
+
+    let timerId = null;
+
+    function addRandomRow() {
+      const time = new Date().toLocaleTimeString();
+      const randomNumber = Math.floor(Math.random() * 100) + 1;
+      const randomStatus = Math.random() < 0.5;
+
+      const tr = document.createElement('tr');
+      const values = [time, randomNumber, randomStatus];
+
+      values.forEach(text => {
+        const td = document.createElement('td');
+        td.textContent = text;
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    }
+
+    startBtn.addEventListener('click', () => {
+      const interval = Number(intervalInput.value);
+
+      if (!interval || interval < 100) {
+        alert('Вкажіть інтервал від 100 мс і вище.');
+        return;
+      }
+
+      table.hidden = false;
+      startBtn.disabled = true;
+      intervalInput.disabled = true;
+      stopBtn.disabled = false;
+
+      addRandomRow();
+      timerId = setInterval(addRandomRow, interval);
+    });
+
+    stopBtn.addEventListener('click', () => {
+      clearInterval(timerId);
+      timerId = null;
+
+      startBtn.disabled = false;
+      intervalInput.disabled = false;
+      stopBtn.disabled = true;
+    });
+  </script>
+
+</body>
+</html>
